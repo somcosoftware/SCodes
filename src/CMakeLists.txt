@@ -19,8 +19,8 @@ set(BUILD_BLACKBOX_TESTS OFF)
 set(BUILD_EXAMPLES OFF)
 add_subdirectory(zxing-cpp)
 
-find_package(QT NAMES Qt5 Qt6 COMPONENTS Core Multimedia Concurrent Quick REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Multimedia Concurrent Quick REQUIRED)
+find_package(QT NAMES Qt5 Qt6 COMPONENTS Core CorePrivate Multimedia Concurrent Quick REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core CorePrivate Multimedia Concurrent Quick REQUIRED)
 
 file(GLOB SOURCE_CPP
     "*.cpp"
@@ -56,7 +56,7 @@ if (ANDROID)
         find_package(Qt${QT_VERSION_MAJOR} COMPONENTS AndroidExtras REQUIRED)
         target_link_libraries(${PROJECT_NAME} PUBLIC Qt${QT_VERSION_MAJOR}::AndroidExtras)
     else()
-        target_link_libraries(${PROJECT_NAME} PUBLIC Qt::CorePrivate)
+        target_link_libraries(${PROJECT_NAME} PUBLIC Qt${QT_VERSION_MAJOR}::CorePrivate)
     endif()
 
     target_link_libraries(${PROJECT_NAME} PUBLIC EGL GLESv2)
