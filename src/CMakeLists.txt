@@ -19,21 +19,26 @@ set(BUILD_BLACKBOX_TESTS OFF)
 set(BUILD_EXAMPLES OFF)
 add_subdirectory(zxing-cpp)
 
-find_package(QT NAMES Qt5 Qt6 COMPONENTS Core Multimedia Concurrent Quick REQUIRED)
+find_package(QT NAMES Qt6 Qt5)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Multimedia Concurrent Quick REQUIRED)
 
-file(GLOB SOURCE_CPP
-    "*.cpp"
+set(ALL_SOURCES
+    SBarcodeDecoder.h
+    SBarcodeDecoder.cpp
+    SBarcodeFormat.h
+    SBarcodeFormat.cpp
+    SBarcodeGenerator.h
+    SBarcodeGenerator.cpp
+    qvideoframeconversionhelper_p.h
 )
 
 if(QT_VERSION_MAJOR EQUAL 6)
-    list(FILTER SOURCE_CPP EXCLUDE REGEX "SBarcodeFilter.cpp")
+    list(APPEND ALL_SOURCES SBarcodeScanner.cpp SBarcodeScanner.h)
 else()
-    list(FILTER SOURCE_CPP EXCLUDE REGEX "SBarcodeScanner.cpp")
+    list(APPEND ALL_SOURCES SBarcodeFilter.cpp SBarcodeFilter.h)
 endif()
 
-
-add_library(${PROJECT_NAME} STATIC ${SOURCE_CPP})
+add_library(${PROJECT_NAME} STATIC ${ALL_SOURCES})
 target_sources(${PROJECT_NAME} PRIVATE private/debug.h)
 set_target_properties(${PROJECT_NAME} PROPERTIES
     QT_QML_MODULE_VERSION 1.0
@@ -45,19 +50,31 @@ if(SCODES_DEBUG)
     target_compile_definitions(${PROJECT_NAME} PUBLIC SCODES_DEBUG)
 endif()
 
-
-target_link_libraries(${PROJECT_NAME} PUBLIC ZXing Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Multimedia Qt${QT_VERSION_MAJOR}::Concurrent Qt${QT_VERSION_MAJOR}::Quick)
-target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_include_directories(${PROJECT_NAME} PRIVATE  "${CMAKE_CURRENT_SOURCE_DIR}/private")
-
 if (ANDROID)
-
     if(QT_VERSION_MAJOR EQUAL 5)
-        find_package(Qt${QT_VERSION_MAJOR} COMPONENTS AndroidExtras REQUIRED)
-        target_link_libraries(${PROJECT_NAME} PUBLIC Qt${QT_VERSION_MAJOR}::AndroidExtras)
-    else()
-        target_link_libraries(${PROJECT_NAME} PUBLIC Qt::CorePrivate)
+        find_package(Qt5 COMPONENTS AndroidExtras REQUIRED)
+        target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::AndroidExtras)
+    endif()
+
+    if(QT_VERSION_MAJOR EQUAL 6)
+        if(QT_VERSION VERSION_GREATER_EQUAL "6.10")
+            set(QT_NO_PRIVATE_MODULE_WARNING TRUE)
+            find_package(Qt6 REQUIRED COMPONENTS CorePrivate)
+        endif()
+
+        target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::CorePrivate)
     endif()
 
     target_link_libraries(${PROJECT_NAME} PUBLIC EGL GLESv2)
 endif()
+
+target_link_libraries(${PROJECT_NAME}
+    PUBLIC
+        ZXing
+        Qt${QT_VERSION_MAJOR}::Core
+        Qt${QT_VERSION_MAJOR}::Multimedia
+        Qt${QT_VERSION_MAJOR}::Concurrent
+        Qt${QT_VERSION_MAJOR}::Quick
+)
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/private")
