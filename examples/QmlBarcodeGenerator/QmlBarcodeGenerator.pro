@@ -5,7 +5,12 @@ CONFIG += c++17
 
 DEFINES += QT_DEPRECATED_WARNINGS
 
+
+HEADERS += \
+    ColorController.h
+
 SOURCES += \
+    ColorController.cpp \
     main.cpp
 
 RESOURCES += qml.qrc
