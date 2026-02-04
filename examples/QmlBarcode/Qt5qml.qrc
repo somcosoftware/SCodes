@@ -1,0 +1,17 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/Qt5ScannerPage.qml</file>
+        <file>qml/Qt5ScannerOverlay.qml</file>
+        <file>qml/Theme.qml</file>
+        <file>qml/main.qml</file>
+        <file>qml/GeneratorPage.qml</file>
+        <file>qml/CButton.qml</file>
+        <file>qml/CTextField.qml</file>
+        <file>qml/CComboBox.qml</file>
+        <file>icons/logo.png</file>
+        <file>qml/CTabButton.qml</file>
+        <file>qml/Subtrack.qml</file>
+        <file>shaders/subtrack.frag</file>
+        <file>shaders/subtrack.vert</file>
+    </qresource>
+</RCC>
