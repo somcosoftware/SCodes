@@ -23,6 +23,8 @@ Item {
             rightMargin: 32
         }
         text: qsTr("Place the QR code to be scanned inside the frame")
+        font.family: Theme.fontFamily
+        font.pixelSize: 16
         horizontalAlignment: Text.AlignHCenter
         color: Theme.white
         wrapMode: Text.WordWrap

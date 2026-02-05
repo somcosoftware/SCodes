@@ -10,438 +10,255 @@ Item {
         id: barcodeGenerator
 
         onForegroundColorChanged: {
-            image.source = ""
             barcodeGenerator.generate(textField.text)
         }
 
         onBackgroundColorChanged: {
-            image.source = ""
             barcodeGenerator.generate(textField.text)
         }
 
         onGenerationFinished: function (error) {
+            resultStack.currentIndex = 1
             if (error === "") {
                 console.log(barcodeGenerator.filePath)
-                image.source = "file:///" + barcodeGenerator.filePath
+                resultImage.source = "file:///" + barcodeGenerator.filePath
             } else {
-                generateLabel.text = error
-                generatePopup.open()
+                errorLabel.text = error
             }
         }
     }
 
-    Rectangle {
-        id: dashboard
-
-        anchors.fill: parent
-
-        height: parent.height
-        width: parent.width
-
-        Rectangle {
-            id: inputRect
-            z: 100
-
-            height: 40
-
-            anchors {
-                top: parent.top
-                left: parent.left
-                right: parent.right
-            }
-
-            CTextField {
-                id: textField
-
-                anchors.fill: parent
-
-                selectByMouse: true
-
-                placeholderText: qsTr("Input")
-            }
+    StackLayout {
+        id: resultStack
+        anchors {
+            fill: parent
+            margins: 16
         }
 
-        Image {
-            id: image
-
-            width: parent.width
-            height: image.width
-
-            anchors {
-                left: parent.left
-                right: parent.right
-                verticalCenter: parent.verticalCenter
-            }
-
-            cache: false
-        }
-
-        Rectangle {
-            id: buttonsRect
-
-            height: 40
-
-            anchors {
-                bottom: parent.bottom
-                left: parent.left
-                right: parent.right
-            }
-
-            RowLayout {
-                id: buttonsLayout
-
-                spacing: 5
-
-                anchors.fill: parent
-
-                CButton {
-                    id: settingsButton
-
-                    Layout.alignment: Qt.AlignHCenter
-                    Layout.bottomMargin: 10
-
-                    text: qsTr("Settings")
-
-                    onClicked: {
-                        settingsPopup.open()
-                    }
-                }
-
-                CButton {
-                    id: generateButton
-
-                    Layout.alignment: Qt.AlignHCenter
-                    Layout.bottomMargin: 10
-                    checkable: false
-
-                    text: qsTr("Generate")
-
-                    onClicked: {
-                        image.source = ""
-                        if (textField.text === "") {
-                            generateLabel.text = "Input is empty"
-                            generatePopup.open()
-                        } else {
-                            barcodeGenerator.generate(textField.text)
-                        }
-                    }
-                }
-
-                CButton {
-                    id: saveButton
-
-                    Layout.alignment: Qt.AlignHCenter
-                    Layout.bottomMargin: 10
-
-                    text: qsTr("Save")
-
-                    onClicked: {
-                        if (barcodeGenerator.saveImage()) {
-                            saveLabel.text = "File successfully saved"
-                        } else {
-                            saveLabel.text = "There was an error while saving file"
-                        }
-
-                        imageSavedPopup.open()
-                    }
-                }
-            }
-        }
-
-        Popup {
-            id: generatePopup
-
-            anchors.centerIn: parent
-
-            dim: true
-
-            modal: true
-
-            Label {
-                id: generateLabel
-
-                anchors.centerIn: parent
-            }
-
-            onClosed: {
-                generateButton.checked = false
-            }
-        }
-
-        Popup {
-            id: imageSavedPopup
-
-            anchors.centerIn: parent
-
-            dim: true
-
-            modal: true
-
-            Label {
-                id: saveLabel
-
-                anchors.centerIn: parent
-            }
-
-            onClosed: {
-                saveButton.checked = false
-            }
-        }
-
-        Popup {
-            id: settingsPopup
-
-            width: parent.width * 0.6
-            height: parent.height * 0.6
-
-            anchors.centerIn: parent
-
-            dim: true
-
-            modal: true
-
+        Item {
             ColumnLayout {
                 anchors.fill: parent
+                spacing: 32
 
-                spacing: 5
+                ColumnLayout {
+                    Layout.fillWidth: true
 
-                CTextField {
-                    id: widthField
+                    spacing: 8
+                    Text {
+                        Layout.fillWidth: true
+                        text: qsTr("Select format to generate")
+                        color: Theme.textColor
+                        font {
+                            pixelSize: 14
+                            family: Theme.fontFamily
+                            bold: true
+                        }
+                    }
 
-                    implicitWidth: parent.width
-                    implicitHeight: parent.height / 10
+                    CComboBox {
+                        id: formatDropDown
+                        Layout.fillWidth: true
+                        textRole: "text"
 
-                    placeholderText: "Current width: " + barcodeGenerator.width
+                        model: ListModel {
+                            ListElement {
+                                text: "Aztec"
+                            }
+                            ListElement {
+                                text: "Codabar"
+                            }
+                            ListElement {
+                                text: "Code39"
+                            }
+                            ListElement {
+                                text: "Code93"
+                            }
+                            ListElement {
+                                text: "Code128"
+                            }
+                            ListElement {
+                                text: "DataMatrix"
+                            }
+                            ListElement {
+                                text: "EAN-8"
+                            }
+                            ListElement {
+                                text: "EAN-13"
+                            }
+                            ListElement {
+                                text: "ITF"
+                            }
+                            ListElement {
+                                text: "PDF417"
+                            }
+                            ListElement {
+                                text: "QRCode"
+                            }
+                            ListElement {
+                                text: "UPC-A"
+                            }
+                            ListElement {
+                                text: "UPC-E"
+                            }
+                        }
 
-                    onEditingFinished: function () {
-
-                        var parsedWidth = parseInt(text)
-
-                        if (isNaN(parsedWidth) != true && parsedWidth > 0) {
-                            barcodeGenerator.width = parsedWidth
+                        onCurrentTextChanged: function () {
+                            barcodeGenerator.setFormat(currentText)
                         }
                     }
                 }
 
-                CTextField {
-                    id: heightField
-
-                    implicitWidth: parent.width
-                    implicitHeight: parent.height / 10
-
-                    placeholderText: "Current height: " + barcodeGenerator.height
-
-                    onEditingFinished: function () {
-
-                        var parsedHeight = parseInt(text)
-
-                        if (isNaN(parsedHeight) != true && parsedHeight > 0) {
-                            barcodeGenerator.height = parsedHeight
+                ColumnLayout {
+                    Layout.fillWidth: true
+                    spacing: 8
+                    Text {
+                        Layout.fillWidth: true
+                        text: qsTr("Enter text")
+                        color: Theme.textColor
+                        font {
+                            pixelSize: 14
+                            family: Theme.fontFamily
+                            bold: true
                         }
+                    }
+
+                    CTextField {
+                        id: textField
+                        Layout.fillWidth: true
+                        placeholderText: qsTr("Input")
                     }
                 }
 
-                CTextField {
-                    id: marginField
-
-                    implicitWidth: parent.width
-                    implicitHeight: parent.height / 10
-
-                    placeholderText: "Current margin: " + barcodeGenerator.margin
-
-                    onEditingFinished: function () {
-
-                        var parsedMargin = parseInt(text)
-
-                        if (isNaN(parsedMargin) != true) {
-                            barcodeGenerator.margin = parsedMargin
+                Item {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    Image {
+                        anchors {
+                            fill: parent
+                            margins: 16
                         }
+                        fillMode: Image.PreserveAspectFit
+                        source: "qrc:/icons/obraz.png"
                     }
                 }
 
-                CTextField {
-                    id: eccLevelField
-
-                    implicitWidth: parent.width
-                    implicitHeight: parent.height / 10
-
-                    placeholderText: "Current ECC Level: " + barcodeGenerator.eccLevel
-
-                    onEditingFinished: function () {
-                        barcodeGenerator.eccLevel = text
-                    }
-                }
-
-                CTextField {
-                    id: foregroundColorField
-
-                    implicitWidth: parent.width
-                    implicitHeight: parent.height / 10
-
-                    placeholderText: "Current foreground color: " + barcodeGenerator.foregroundColor
-
-                    onTextChanged: function () {
-                        foregroundColorField.inputIsValid = ColorController.checkColor(
-                                    foregroundColorField.text)
-
-                        if (ColorController.checkColor(
-                                    foregroundColorField.text)) {
-                            barcodeGenerator.setForegroundColor(
-                                        ColorController.convertStringToColor(
-                                            foregroundColorField.text))
-                        }
-                    }
-                }
-
-                CTextField {
-                    id: backgroundColorField
-
-                    implicitWidth: parent.width
-                    implicitHeight: parent.height / 10
-
-                    placeholderText: "Current background color: " + barcodeGenerator.backgroundColor
-
-                    onTextChanged: function () {
-                        backgroundColorField.inputIsValid = ColorController.checkColor(
-                                    backgroundColorField.text)
-
-                        if (ColorController.checkColor(
-                                    backgroundColorField.text)) {
-                            barcodeGenerator.setBackgroundColor(
-                                        ColorController.convertStringToColor(
-                                            backgroundColorField.text))
-                        }
-                    }
-                }
-
-                CComboBox {
-                    id: formatDropDown
-
-                    implicitWidth: parent.width
-                    implicitHeight: parent.height / 10
-
-                    model: ListModel {
-                        id: formats
-
-                        ListElement {
-                            text: "Aztec"
-                        }
-                        ListElement {
-                            text: "Codabar"
-                        }
-                        ListElement {
-                            text: "Code39"
-                        }
-                        ListElement {
-                            text: "Code93"
-                        }
-                        ListElement {
-                            text: "Code128"
-                        }
-                        ListElement {
-                            text: "DataMatrix"
-                        }
-                        ListElement {
-                            text: "EAN-8"
-                        }
-                        ListElement {
-                            text: "EAN-13"
-                        }
-                        ListElement {
-                            text: "ITF"
-                        }
-                        ListElement {
-                            text: "PDF417"
-                        }
-                        ListElement {
-                            text: "QRCode"
-                        }
-                        ListElement {
-                            text: "UPC-A"
-                        }
-                        ListElement {
-                            text: "UPC-E"
-                        }
-                    }
-                    onCurrentIndexChanged: function () {
-                        var formatAsText = formats.get(currentIndex).text
-                        // a separate method was used because of qml error
-                        // when try to use it as overloaded setter
-                        barcodeGenerator.setFormat(formatAsText)
-                    }
-                }
-
-                CComboBox {
-                    id: imageFormat
-
-                    implicitWidth: parent.width
-                    implicitHeight: parent.height / 10
-
-                    model: ListModel {
-                        id: extensions
-
-                        ListElement {
-                            text: "png"
-                        }
-
-                        ListElement {
-                            text: "jpg"
-                        }
-                    }
-                    onCurrentIndexChanged: function () {
-                        barcodeGenerator.extension = extensions.get(
-                                    currentIndex).text
-                    }
-                }
-
-                CTextField {
-                    id: fileNameField
-
-                    text: qsTr(barcodeGenerator.fileName)
-
-                    implicitWidth: parent.width
-                    implicitHeight: parent.height / 10
-
-                    onEditingFinished: {
-                        barcodeGenerator.fileName = text
-                    }
-                }
-
-                CTextField {
-                    id: imagePathField
-
-                    text: qsTr(barcodeGenerator.imagePath)
-
-                    implicitWidth: parent.width
-                    implicitHeight: parent.height / 10
-
-                    placeholderText: "Current image path: " + barcodeGenerator.imagePath
-
-                    onEditingFinished: {
-                        barcodeGenerator.imagePath = text
-                    }
-                }
-
-                CTextField {
-                    id: centerImageRatioField
-
-                    text: qsTr(barcodeGenerator.centerImageRatio.toString())
-
-                    implicitWidth: parent.width
-                    implicitHeight: parent.height / 10
-
-                    placeholderText: "Current center image ratio: "
-                                     + barcodeGenerator.centerImageRatio
-
-                    onEditingFinished: {
-                        barcodeGenerator.centerImageRatio = parseInt(text)
+                CButton {
+                    Layout.fillWidth: true
+                    text: qsTr("Generate")
+                    backgroundColor: Theme.teal
+                    textColor: Theme.white
+                    enabled: textField.text !== ""
+                    onClicked: {
+                        barcodeGenerator.generate(textField.text)
                     }
                 }
             }
+        }
 
-            onClosed: {
-                settingsButton.checked = false
+        Item {
+            ColumnLayout {
+                anchors.fill: parent
+                spacing: 32
+
+                Text {
+                    id: generateLabel
+                    Layout.fillWidth: true
+                    text: qsTr("Your code has been generated!")
+                    font.family: Theme.fontFamily
+                    font.pixelSize: 16
+                    visible: !errorLabel.visible
+                    horizontalAlignment: Text.AlignHCenter
+                }
+
+                Text {
+                    id: errorLabel
+                    Layout.fillWidth: true
+                    color: Theme.red
+                    visible: text !== ""
+                    horizontalAlignment: Text.AlignHCenter
+                }
+
+                Item {
+                    Layout.fillHeight: true
+                }
+
+                Item {
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    Layout.leftMargin: 50
+                    Layout.rightMargin: 50
+                    Layout.preferredHeight: width
+                    Image {
+                        id: resultImage
+                        anchors.fill: parent
+                        fillMode: Image.PreserveAspectFit
+                    }
+                }
+
+                Item {
+                    Layout.fillHeight: true
+                }
+
+                ColumnLayout {
+                    Layout.fillWidth: true
+                    CButton {
+                        Layout.fillWidth: true
+                        text: qsTr("Clear")
+                        backgroundColor: Theme.white
+                        textColor: Theme.red
+                        icon.source: "qrc:/icons/close.svg"
+                        onClicked: {
+                            errorLabel.text = ""
+                            resultImage.source = ""
+                            resultStack.currentIndex = 0
+                        }
+                    }
+
+                    CButton {
+                        Layout.fillWidth: true
+                        enabled: !errorLabel.visible
+                        text: qsTr("Download")
+                        backgroundColor: Theme.teal
+                        textColor: Theme.white
+                        icon.source: "qrc:/icons/download.svg"
+                        onClicked: {
+                            if (barcodeGenerator.saveImage()) {
+                                messagePopup.showMessage(
+                                            qsTr("File successfully saved"))
+                            } else {
+                                messagePopup.showMessage(
+                                            qsTr("There was an error while saving file"))
+                            }
+                        }
+                    }
+                }
             }
+        }
+    }
+
+    Popup {
+        id: messagePopup
+        anchors.centerIn: parent
+
+        function showMessage(message) {
+            messagePopupLabel.text = message
+            messagePopup.open()
+        }
+
+        dim: true
+        modal: true
+
+        implicitWidth: messagePopupLabel.paintedWidth + 40
+        implicitHeight: messagePopupLabel.paintedHeight + 80
+
+        background: Rectangle {
+            color: Theme.white
+            radius: 20
+        }
+
+        Label {
+            id: messagePopupLabel
+            anchors.centerIn: parent
         }
     }
 }

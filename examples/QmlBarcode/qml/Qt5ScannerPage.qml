@@ -1,12 +1,21 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
-import QtQuick.Window 2.12
+import QtQuick.Layouts 1.15
 import QtMultimedia 5.12
 
 import com.somcosoftware.scodes 1.0
 
-Rectangle {
+Item {
     id: root
+
+    property bool enableCamera: false
+
+    onEnableCameraChanged: {
+        if (enableCamera)
+            camera.start()
+        else
+            camera.stop()
+    }
 
     Camera {
         id: camera
@@ -25,6 +34,12 @@ Rectangle {
         autoOrientation: true
         fillMode: VideoOutput.PreserveAspectCrop
         filters: [barcodeScanner]
+
+        onSourceRectChanged: {
+            barcodeScanner.captureRect = videoOutput.mapRectToSource(
+                        videoOutput.mapNormalizedRectToItem(Qt.rect(0.25, 0.25,
+                                                                    0.5, 0.5)))
+        }
 
         Qt5ScannerOverlay {
             id: scannerOverlay
@@ -51,43 +66,54 @@ Rectangle {
     SBarcodeScanner {
         id: barcodeScanner
 
-        property rect normalizedScanZone: Qt.rect(0.25, 0.25, 0.5, 0.5)
+        captureRect: videoOutput.mapRectToSource(
+                         videoOutput.mapNormalizedRectToItem(Qt.rect(0.25,
+                                                                     0.25, 0.5,
+                                                                     0.5)))
 
-        captureRect: {
-            if (videoOutput.sourceRect.width < 1
-                    || videoOutput.contentRect.width < 1)
-                return Qt.rect(0, 0, 0, 0)
-
-            return videoOutput.mapRectToSource(
-                        videoOutput.mapNormalizedRectToItem(normalizedScanZone))
+        onCapturedChanged: {
+            active = false
+            console.log("captured: " + captured)
         }
     }
 
     Rectangle {
         id: resultScreen
-
-        anchors.fill: parent
+        anchors.centerIn: parent
 
         visible: !barcodeScanner.active
 
-        Column {
-            anchors.centerIn: parent
+        x: scannerOverlay.captureRect.x
+        y: scannerOverlay.captureRect.y
+        width: scannerOverlay.captureRect.width
+        height: Math.max(scannerOverlay.captureRect.width,
+                         popupLayout.implicitHeight + 64)
+
+        ColumnLayout {
+            id: popupLayout
+            anchors {
+                fill: parent
+                margins: 32
+            }
             spacing: 20
 
             Text {
-                id: scanResultText
-
-                anchors.horizontalCenter: parent.horizontalCenter
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                wrapMode: Text.WordWrap
+                font {
+                    family: Theme.fontFamily
+                    pixelSize: 14
+                }
 
                 text: barcodeScanner.captured
             }
 
-            Button {
-                id: scanButton
-
-                anchors.horizontalCenter: parent.horizontalCenter
-
+            CButton {
+                Layout.fillWidth: true
                 text: qsTr("Scan again")
+                backgroundColor: Theme.teal
+                textColor: Theme.white
 
                 onClicked: {
                     barcodeScanner.active = true

@@ -10,9 +10,9 @@ ApplicationWindow {
     visible: true
 
     width: Qt.platform.os === "android"
-           || Qt.platform.os === "ios" ? Screen.width : 1280
+           || Qt.platform.os === "ios" ? Screen.width : 800
     height: Qt.platform.os === "android"
-            || Qt.platform.os === "ios" ? Screen.height : 720
+            || Qt.platform.os === "ios" ? Screen.height : 800
 
     background: Rectangle {
         gradient: Gradient {
@@ -61,7 +61,7 @@ ApplicationWindow {
                         bottom: parent.bottom
                     }
                     implicitHeight: 1
-                    color: "#A3C8BF"
+                    color: Theme.tabbar.inactiveBorderColor
                 }
             }
 
@@ -75,12 +75,18 @@ ApplicationWindow {
         }
 
         StackLayout {
+            id: stackLayout
             currentIndex: tabBar.currentIndex
             Layout.fillWidth: true
             Layout.fillHeight: true
 
             Loader {
                 source: VersionHelper.isQt6 ? "Qt6ScannerPage.qml" : "Qt5ScannerPage.qml"
+                onLoaded: {
+                    item.enableCamera = Qt.binding(function () {
+                        return stackLayout.currentIndex == 0
+                    })
+                }
             }
 
             Loader {
