@@ -13,5 +13,10 @@
         <file>qml/Subtrack.qml</file>
         <file>shaders/subtrack.frag</file>
         <file>shaders/subtrack.vert</file>
+        <file>icons/close.svg</file>
+        <file>icons/download.svg</file>
+        <file>icons/obraz.png</file>
+        <file>icons/arrow_drop_down.svg</file>
+        <file>icons/check.svg</file>
     </qresource>
 </RCC>

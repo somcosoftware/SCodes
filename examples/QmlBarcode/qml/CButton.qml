@@ -1,25 +1,56 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
-import QtQuick.Window 2.12
 
-
-/*!
-  Classic push button for configure, generate & save operations.
-  */
 Button {
-  id: root
+    id: root
 
-  height: 100
-  implicitWidth: appWindow.width / 4
+    required property color backgroundColor
+    required property color textColor
 
-  checkable: true
+    implicitHeight: 54
+    icon.source: ""
 
-  palette.buttonText: Theme.textColor
+    background: Rectangle {
+        radius: 72
+        color: Theme.getButtonBackground(root.backgroundColor, root.enabled,
+                                         root.down)
+    }
 
-  background: Rectangle {
-    radius: 10
-    color: root.pressed ? Qt.darker(
-                            Theme.backgroundColor) : Theme.backgroundColor
-  }
+    font {
+        family: Theme.fontFamily
+        pixelSize: 16
+        bold: true
+    }
+
+    contentItem: Item {
+        anchors.fill: parent
+        RowLayout {
+            anchors.centerIn: parent
+            spacing: 16
+
+            implicitWidth: (img.visible ? 24 + 16 : 0) + txt.paintedWidth
+            Text {
+                id: txt
+                Layout.preferredWidth: paintedWidth
+                text: root.text
+                color: root.textColor
+                horizontalAlignment: Text.AlignHCenter
+                font {
+                    pixelSize: 16
+                    family: Theme.fontFamily
+                    bold: true
+                }
+            }
+
+            Image {
+                id: img
+                visible: status == Image.Ready
+                Layout.preferredHeight: 24
+                Layout.preferredWidth: 24
+                fillMode: Image.PreserveAspectFit
+                source: root.icon.source
+            }
+        }
+    }
 }

@@ -6,7 +6,6 @@ TabButton {
     background: Item {
         anchors.fill: parent
         Rectangle {
-            visible: root.checked
             anchors {
                 left: parent.left
                 leftMargin: 36
@@ -15,15 +14,16 @@ TabButton {
                 bottom: parent.bottom
             }
             implicitHeight: 4
-            color: Theme.teal
+            visible: root.checked
+            color: Theme.tabbar.activeBorderColor
         }
     }
 
     contentItem: Text {
         text: root.text
-        font.weight: root.checked ? 700 : 600
         font.bold: root.checked
-        font.family: "Inter"
+        font.family: Theme.fontFamily
+        font.pixelSize: 16
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
 

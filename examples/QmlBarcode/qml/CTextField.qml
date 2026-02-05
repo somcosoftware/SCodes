@@ -1,25 +1,30 @@
-import QtQuick 2.12
-import QtQuick.Controls 2.12
+import QtQuick 2.15
+import QtQuick.Controls 2.15
 
 
 /*!
   Field for setting width, height, margin & error correction code level parameters.
   */
 TextField {
-  id: root
+    id: root
 
-  property bool inputIsValid: true
+    background: Item {
+        anchors.fill: parent
 
-  selectByMouse: true
-
-  leftPadding: 5
-
-  background: Rectangle {
-    radius: 2
-
-    border {
-      color: inputIsValid ? Theme.borderColor : Theme.invalidInputBorderColor
-      width: 1
+        Rectangle {
+            anchors {
+                left: parent.left
+                right: parent.right
+                bottom: parent.bottom
+            }
+            height: 2
+            color: Theme.textField.borderColor
+        }
     }
-  }
+
+    font.pixelSize: 16
+    font.family: Theme.fontFamily
+
+    placeholderTextColor: Theme.textField.placeholderTextColor
+    color: Theme.textField.textColor
 }
