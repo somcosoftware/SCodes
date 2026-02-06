@@ -17,7 +17,10 @@ int main(int argc, char* argv[])
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+#else
+    qputenv("QT_QUICK_CONTROLS_STYLE", QByteArray("Basic"));
 #endif
+
     QGuiApplication app(argc, argv);
     QQmlApplicationEngine engine;
 
@@ -26,8 +29,8 @@ int main(int argc, char* argv[])
 #else
     qmlRegisterType<SBarcodeScanner>("com.somcosoftware.scodes", 1, 0, "SBarcodeScanner");
 #endif
-    qmlRegisterType<SBarcodeGenerator>("com.somcosoftware.scodes", 1, 0, "SBarcodeGenerator");
 
+    qmlRegisterType<SBarcodeGenerator>("com.somcosoftware.scodes", 1, 0, "SBarcodeGenerator");
     ColorController colorController;
     qmlRegisterSingletonInstance<ColorController>("com.somcosoftware.scodes", 1, 0, "ColorController", &colorController);
     VersionHelper versionHelper;
