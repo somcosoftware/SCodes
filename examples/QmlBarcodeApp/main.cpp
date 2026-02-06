@@ -36,10 +36,10 @@ int main(int argc, char* argv[])
     VersionHelper versionHelper;
     qmlRegisterSingletonInstance<VersionHelper>("com.somcosoftware.scodes", 1, 0, "VersionHelper", &versionHelper);
 
-    qmlRegisterSingletonType(QUrl("qrc:/qml/Theme.qml"), "Theme", 1, 0, "Theme");
-
     qmlRegisterUncreatableMetaObject(
         SCodes::staticMetaObject, "com.somcosoftware.scodes", 1, 0, "SCodes", "Error, enum type");
+
+    qmlRegisterSingletonType(QUrl("qrc:/qml/Theme.qml"), "Theme", 1, 0, "Theme");
 
     engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
 

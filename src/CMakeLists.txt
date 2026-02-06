@@ -312,7 +312,7 @@ add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${SRC_FILES})
 target_sources(${PROJECT_NAME} PRIVATE private/debug.h)
 set_target_properties(${PROJECT_NAME} PROPERTIES
     QT_QML_MODULE_VERSION 1.0
-    QT_QML_MODULE_URI com.scythestudio.scodes
+    QT_QML_MODULE_URI com.somcosoftware.scodes
 
 )
 if(SCODES_DEBUG)
