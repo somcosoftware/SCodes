@@ -3,6 +3,7 @@ import QtQuick.Controls 2.15
 
 TabButton {
     id: root
+    implicitHeight: 59
     background: Item {
         anchors.fill: parent
         Rectangle {

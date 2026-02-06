@@ -1,28 +1,38 @@
 // Subtrack.qml
-import QtQuick 2.12
+import QtQuick 2.15
 
-ShaderEffect {
+import com.somcosoftware.scodes 1.0
+
+Canvas {
     id: root
-
     anchors.fill: parent
+    antialiasing: true
 
-    // Properties
-    property color baseColor: "#535353"
-    property real outerOpacity: 0.71
-    property rect captureRect: Qt.rect(0, 0, 0, 0)
+    property color baseColor: Theme.subtrack.backgroundColor
+    property real outerOpacity: Theme.subtrack.opacity
+    property rect captureRect: Qt.rect(0.25, 0.25, 0.5, 0.5)
 
-    // Shader uniforms - pass both captureRect and size
-    property color uColor: baseColor
-    property real uOpacity: outerOpacity
-    property vector4d uCaptureRect: Qt.vector4d(captureRect.x, captureRect.y,
-                                                captureRect.width,
-                                                captureRect.height)
-    property vector2d uSize: Qt.vector2d(width, height)
+    onPaint: {
+        var ctx = getContext("2d")
+        ctx.reset()
 
-    // Update when size changes
-    onWidthChanged: update()
-    onHeightChanged: update()
+        // Background overlay
+        ctx.fillStyle = Qt.rgba(root.baseColor.r, root.baseColor.g,
+                                root.baseColor.b, root.outerOpacity)
 
-    vertexShader: "qrc:/shaders/subtrack.vert"
-    fragmentShader: "qrc:/shaders/subtrack.frag"
+        ctx.fillRect(0, 0, width, height)
+
+        var rx = root.captureRect.x * width
+        var ry = root.captureRect.y * height
+        var rw = root.captureRect.width * width
+        var rh = root.captureRect.height * height
+
+        ctx.clearRect(rx, ry, rw, rh)
+    }
+
+    onWidthChanged: requestPaint()
+    onHeightChanged: requestPaint()
+    onCaptureRectChanged: requestPaint()
+    onBaseColorChanged: requestPaint()
+    onOuterOpacityChanged: requestPaint()
 }

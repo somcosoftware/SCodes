@@ -35,17 +35,11 @@ Item {
         fillMode: VideoOutput.PreserveAspectCrop
         filters: [barcodeScanner]
 
-        onSourceRectChanged: {
-            barcodeScanner.captureRect = videoOutput.mapRectToSource(
-                        videoOutput.mapNormalizedRectToItem(Qt.rect(0.25, 0.25,
-                                                                    0.5, 0.5)))
-        }
-
-        Qt5ScannerOverlay {
+        ScannerOverlay {
             id: scannerOverlay
             anchors.fill: parent
 
-            captureRect: videoOutput.mapRectToItem(barcodeScanner.captureRect)
+            captureRect: barcodeScanner.captureRect
         }
 
         // used to get camera focus on touched point
@@ -66,15 +60,12 @@ Item {
     SBarcodeScanner {
         id: barcodeScanner
 
-        captureRect: videoOutput.mapRectToSource(
-                         videoOutput.mapNormalizedRectToItem(Qt.rect(0.25,
-                                                                     0.25, 0.5,
-                                                                     0.5)))
+        captureRect: Qt.rect(0.25, 0.25, 0.5, 0.5)
 
-        onCapturedChanged: {
-            active = false
-            console.log("captured: " + captured)
-        }
+        onCapturedChanged: captured => {
+                               active = false
+                               console.log("captured: " + captured)
+                           }
     }
 
     Rectangle {
@@ -83,11 +74,13 @@ Item {
 
         visible: !barcodeScanner.active
 
-        x: scannerOverlay.captureRect.x
-        y: scannerOverlay.captureRect.y
-        width: scannerOverlay.captureRect.width
-        height: Math.max(scannerOverlay.captureRect.width,
+        x: barcodeScanner.captureRect.x * parent.width
+        y: barcodeScanner.captureRect.y * parent.height
+        width: barcodeScanner.captureRect.width * parent.width
+        height: Math.max(barcodeScanner.captureRect.height * parent.height,
                          popupLayout.implicitHeight + 64)
+
+        color: Theme.white
 
         ColumnLayout {
             id: popupLayout
@@ -98,6 +91,7 @@ Item {
             spacing: 20
 
             Text {
+                id: capturedText
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 wrapMode: Text.WordWrap

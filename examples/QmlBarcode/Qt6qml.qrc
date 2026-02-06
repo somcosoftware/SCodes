@@ -1,12 +1,20 @@
 <RCC>
     <qresource prefix="/">
         <file>qml/Qt6ScannerPage.qml</file>
-        <file>qml/Qt6ScannerOverlay.qml</file>
+        <file>qml/ScannerOverlay.qml</file>
         <file>qml/Theme.qml</file>
         <file>qml/GeneratorPage.qml</file>
         <file>qml/CButton.qml</file>
         <file>qml/CTextField.qml</file>
         <file>qml/CComboBox.qml</file>
-		<file>icons/logo.png</file>
+        <file>icons/logo.png</file>
+        <file>icons/arrow_drop_down.svg</file>
+        <file>icons/check.svg</file>
+        <file>icons/close.svg</file>
+        <file>icons/download.svg</file>
+        <file>icons/obraz.png</file>
+        <file>qml/CTabButton.qml</file>
+        <file>qml/Subtrack.qml</file>
+        <file>qml/main.qml</file>
     </qresource>
 </RCC>

@@ -173,8 +173,10 @@ Item {
                 Text {
                     id: errorLabel
                     Layout.fillWidth: true
+                    Layout.topMargin: 40
                     color: Theme.red
                     visible: text !== ""
+                    font.pixelSize: 18
                     horizontalAlignment: Text.AlignHCenter
                 }
 

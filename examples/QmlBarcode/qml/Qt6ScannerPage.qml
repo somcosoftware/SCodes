@@ -1,94 +1,93 @@
 import QtQuick
-import QtQuick.Controls
+import QtQuick.Layouts
 import QtMultimedia
-import com.scythestudio.scodes 1.0
 
+import com.somcosoftware.scodes 1.0
 
-/*!
-  Barcode scanner main page. All QML elements managing from here.
-  */
-ApplicationWindow {
-  id: root
+Item {
+    id: root
 
-  width: Qt.platform.os === "android"
-         || Qt.platform.os === "ios" ? Screen.width : 1280
-  height: Qt.platform.os === "android"
-          || Qt.platform.os === "ios" ? Screen.height : 720
+    property bool enableCamera: false
 
-  visible: true
-
-  SBarcodeScanner {
-    id: barcodeScanner
-
-    forwardVideoSink: videoOutput.videoSink
-    scanning: !resultScreen.visible
-
-    captureRect: Qt.rect(1 / 4, 1 / 4, 1 / 2, 1 / 2)
-
-    onCapturedChanged: function (captured) {
-      scanResultText.text = captured
-      resultScreen.visible = true
+    onEnableCameraChanged: {
+        barcodeScanner.camera.active = enableCamera
     }
-  }
 
-  VideoOutput {
-    id: videoOutput
+    SBarcodeScanner {
+        id: barcodeScanner
 
-    anchors.fill: parent
+        forwardVideoSink: videoOutput.videoSink
 
-    width: root.width
+        captureRect: Qt.rect(0.25, 0.25, 0.5, 0.5)
 
-    focus: visible
-    fillMode: VideoOutput.PreserveAspectCrop
-  }
-
-  Qt6ScannerOverlay {
-    id: scannerOverlay
-
-    anchors.fill: parent
-
-    captureRect: barcodeScanner.captureRect
-  }
-
-  Rectangle {
-    id: resultScreen
-
-    anchors.fill: parent
-
-    visible: false
-
-    Column {
-      anchors.centerIn: parent
-
-      spacing: 20
-
-      Text {
-        id: scanResultText
-
-        anchors.horizontalCenter: parent.horizontalCenter
-
-        color: Theme.textColor
-      }
-
-      Button {
-        id: scanButton
-
-        anchors.horizontalCenter: parent.horizontalCenter
-
-        implicitWidth: 100
-        implicitHeight: 50
-
-        Text {
-          anchors.centerIn: parent
-
-          text: qsTr("Scan again")
-          color: Theme.textColor
+        onCapturedChanged: function (captured) {
+            scanning = false
+            capturedText.text = captured
+            resultScreen.visible = true
         }
-
-        onClicked: {
-          resultScreen.visible = false
-        }
-      }
     }
-  }
+
+    VideoOutput {
+        id: videoOutput
+
+        anchors.fill: parent
+
+        width: root.width
+
+        focus: visible
+        fillMode: VideoOutput.PreserveAspectCrop
+    }
+
+    ScannerOverlay {
+        id: scannerOverlay
+
+        anchors.fill: parent
+        captureRect: barcodeScanner.captureRect
+    }
+
+    Rectangle {
+        id: resultScreen
+        anchors.centerIn: parent
+
+        visible: false
+
+        x: barcodeScanner.captureRect.x * parent.width
+        y: barcodeScanner.captureRect.y * parent.height
+        width: barcodeScanner.captureRect.width * parent.width
+        height: Math.max(barcodeScanner.captureRect.height * parent.height,
+                         popupLayout.implicitHeight + 64)
+
+        ColumnLayout {
+            id: popupLayout
+            anchors {
+                fill: parent
+                margins: 32
+            }
+            spacing: 20
+
+            Text {
+                id: capturedText
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                wrapMode: Text.WordWrap
+                font {
+                    family: Theme.fontFamily
+                    pixelSize: 14
+                }
+            }
+
+            CButton {
+                Layout.fillWidth: true
+                text: qsTr("Scan again")
+                backgroundColor: Theme.teal
+                textColor: Theme.white
+
+                onClicked: {
+                    resultScreen.visible = false
+                    capturedText.text = ""
+                    barcodeScanner.scanning = true
+                }
+            }
+        }
+    }
 }
