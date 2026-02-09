@@ -28,8 +28,6 @@ else()
     qt6_add_resources(RSCS Qt6qml.qrc)
 endif()
 
-add_subdirectory(${LIB_DIR} ${CMAKE_BINARY_DIR}/SCodes)
-
 if(ANDROID)
     if(QT_VERSION_MAJOR EQUAL 5)
         set(ANDROID_MIN_SDK_VERSION 21)
