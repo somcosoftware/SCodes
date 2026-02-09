@@ -99,6 +99,12 @@ public:
      */
     QColor backgroundColor() const;
 
+    /*!
+     * \brief Returns the full path to the last successfully generated barcode image (temp file).
+     * Exposed for unit tests only.
+     */
+    QString generatedFilePath() const;
+
 public slots:
 
     /*!
