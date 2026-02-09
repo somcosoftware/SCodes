@@ -10,16 +10,11 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-#Check this file for any *_DIR variable definitions and other
-include("cmake/Locations.cmake")
-
 if(Qt${QT_VERSION_MAJOR} STREQUAL Qt5)
     qt5_add_resources(RSCS qml.qrc)
 else()
     qt_add_resources(RSCS qml.qrc)
 endif()
-
-add_subdirectory(${LIB_DIR} ${CMAKE_BINARY_DIR}/SCodes)
 
 if(ANDROID)
 
@@ -56,8 +51,7 @@ else()
 
 endif()
 
-target_link_libraries(${PROJECT_NAME} PRIVATE ${REQUIRED_QT_LIBS} SCodes)
-
+target_link_libraries(${PROJECT_NAME} PRIVATE SCodes)
 
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_import_qml_plugins(${PROJECT_NAME})

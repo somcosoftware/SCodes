@@ -241,6 +241,11 @@ QColor SBarcodeGenerator::backgroundColor() const
     return m_backgroundColor;
 }
 
+QString SBarcodeGenerator::generatedFilePath() const
+{
+    return m_filePath;
+}
+
 void SBarcodeGenerator::setBackgroundColor(const QColor &backgroundColor)
 {
     if (m_backgroundColor == backgroundColor) {
