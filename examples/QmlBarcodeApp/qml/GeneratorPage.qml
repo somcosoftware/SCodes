@@ -194,6 +194,7 @@ Item {
                         id: resultImage
                         anchors.fill: parent
                         fillMode: Image.PreserveAspectFit
+                        cache: false
                     }
                 }
 
