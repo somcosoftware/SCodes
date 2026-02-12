@@ -49,9 +49,15 @@ public:
         if (_filter->getImageFuture().isRunning()) {
             return *input;
         }
+        const QSize frameSize = input->size();
+        const QRectF normRect = _filter->captureRect();
 
+        const QRectF pixelRect(normRect.x() * frameSize.width(),
+                              normRect.y() * frameSize.height(),
+                              normRect.width() * frameSize.width(),
+                              normRect.height() * frameSize.height());
         const QImage croppedCapturedImage =
-            _filter->getDecoder()->videoFrameToImage(*input, _filter->captureRect().toRect());
+            _filter->getDecoder()->videoFrameToImage(*input, pixelRect.toRect());
         _filter->getImageFuture() =
           QtConcurrent::run(processImage, _filter->getDecoder(), croppedCapturedImage,
             SCodes::toZXingFormat(_filter->format()));

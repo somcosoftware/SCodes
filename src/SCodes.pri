@@ -2,7 +2,7 @@ QT += multimedia concurrent
 
 
 CONFIG += qmltypes
-QML_IMPORT_NAME = com.scythestudio.scodes
+QML_IMPORT_NAME = com.somcosoftware.scodes
 QML_IMPORT_MAJOR_VERSION = 1
 
 INCLUDEPATH += \

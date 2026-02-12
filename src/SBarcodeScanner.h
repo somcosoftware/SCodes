@@ -79,7 +79,7 @@ private:
     /// Subsection of videoframe to capture, in normalized coordinates
     QRectF m_captureRect;
     /// Last captured string from QrCode
-    QString m_captured = "";
+    QString m_captured;
     /// QMediaCaptureSession instance to actually perform the camera recording
     QMediaCaptureSession m_capture;
     /// Separate thread for Qr code processing and detection
