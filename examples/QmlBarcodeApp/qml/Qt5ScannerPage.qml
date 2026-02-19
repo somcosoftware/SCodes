@@ -8,15 +8,6 @@ import com.somcosoftware.scodes 1.0
 Item {
     id: root
 
-    property bool enableCamera: false
-
-    onEnableCameraChanged: {
-        if (enableCamera)
-            camera.start()
-        else
-            camera.stop()
-    }
-
     Camera {
         id: camera
 
@@ -99,6 +90,8 @@ Item {
                     family: Theme.fontFamily
                     pixelSize: 14
                 }
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
 
                 text: barcodeScanner.captured
             }

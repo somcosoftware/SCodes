@@ -9,14 +9,6 @@ Item {
     SBarcodeGenerator {
         id: barcodeGenerator
 
-        onForegroundColorChanged: {
-            barcodeGenerator.generate(textField.text)
-        }
-
-        onBackgroundColorChanged: {
-            barcodeGenerator.generate(textField.text)
-        }
-
         onGenerationFinished: function (error) {
             resultStack.currentIndex = 1
             if (error === "") {
@@ -227,7 +219,8 @@ Item {
                         onClicked: {
                             if (barcodeGenerator.saveImage()) {
                                 messagePopup.showMessage(
-                                            qsTr("File successfully saved"))
+                                            qsTr("File successfully saved: "
+                                                 + barcodeGenerator.filePath))
                             } else {
                                 messagePopup.showMessage(
                                             qsTr("There was an error while saving file"))

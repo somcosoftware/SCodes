@@ -82,11 +82,6 @@ ApplicationWindow {
 
             Loader {
                 source: VersionHelper.isQt6 ? "Qt6ScannerPage.qml" : "Qt5ScannerPage.qml"
-                onLoaded: {
-                    item.enableCamera = Qt.binding(function () {
-                        return stackLayout.currentIndex == 0
-                    })
-                }
             }
 
             Loader {

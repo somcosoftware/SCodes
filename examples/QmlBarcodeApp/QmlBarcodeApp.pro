@@ -5,8 +5,13 @@ CONFIG += c++17
 
 DEFINES += QT_DEPRECATED_WARNINGS
 
+HEADERS += \
+    ColorController.h \
+    VersionHelper.h
+
 SOURCES += \
-    main.cpp
+    main.cpp \
+    ColorController.cpp
 
 equals(QT_MAJOR_VERSION, 6) {
     RESOURCES += Qt6qml.qrc

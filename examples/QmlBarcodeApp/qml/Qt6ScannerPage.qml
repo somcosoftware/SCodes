@@ -7,12 +7,6 @@ import com.somcosoftware.scodes 1.0
 Item {
     id: root
 
-    property bool enableCamera: false
-
-    onEnableCameraChanged: {
-        barcodeScanner.camera.active = enableCamera
-    }
-
     SBarcodeScanner {
         id: barcodeScanner
 
@@ -74,6 +68,8 @@ Item {
                     family: Theme.fontFamily
                     pixelSize: 14
                 }
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
             }
 
             CButton {
