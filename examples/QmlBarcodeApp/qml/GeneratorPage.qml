@@ -106,8 +106,8 @@ Item {
                             Layout.fillWidth: true
                             text: qsTr("Foreground: " + barcodeGenerator.foregroundColor)
                             font.bold: false
-                            backgroundColor: Theme.white
-                            textColor: Theme.black
+                            backgroundColor: barcodeGenerator.foregroundColor
+                            textColor: ColorController.constractColor(barcodeGenerator.foregroundColor)
                             onClicked: foregroundColorDialog.open()
                         }
 
@@ -116,8 +116,8 @@ Item {
                             Layout.fillWidth: true
                             text: qsTr("Background: " + barcodeGenerator.backgroundColor)
                             font.bold: false
-                            backgroundColor: Theme.white
-                            textColor: Theme.black
+                            backgroundColor: barcodeGenerator.backgroundColor
+                            textColor: ColorController.constractColor(barcodeGenerator.backgroundColor)
                             onClicked: backgroundColorDialog.open()
                         }
                     }
