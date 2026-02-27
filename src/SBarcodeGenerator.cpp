@@ -14,7 +14,10 @@
 
 SBarcodeGenerator::SBarcodeGenerator(QQuickItem *parent)
     : QQuickItem(parent)
-{ }
+{
+    setWidth(500);
+    setHeight(500);
+}
 
 bool SBarcodeGenerator::generate(const QString &inputString)
 {
@@ -35,12 +38,12 @@ bool SBarcodeGenerator::generate(const QString &inputString)
                                                   .setMargin(m_margin)
                                                   .setEccLevel(m_eccLevel);
 
-            auto qrCodeMatrix = writer.encode(inputString.toStdString(), m_width, m_height);
+            auto qrCodeMatrix = writer.encode(inputString.toStdString(), width(), height());
 
-            QImage image(m_width, m_height, QImage::Format_ARGB32);
+            QImage image(width(), height(), QImage::Format_ARGB32);
 
-            for (int y = 0; y < m_height; ++y) {
-                for (int x = 0; x < m_width; ++x) {
+            for (int y = 0; y < height(); ++y) {
+                for (int x = 0; x < width(); ++x) {
                     if (qrCodeMatrix.get(x, y)) {
                         image.setPixelColor(x, y, m_foregroundColor);
                     } else {
@@ -52,7 +55,7 @@ bool SBarcodeGenerator::generate(const QString &inputString)
             // Center images works only on QR codes.
             if (m_format == SCodes::SBarcodeFormat::QRCode) {
                 if (!m_imagePath.isEmpty()) {
-                    QSize centerImageSize(m_width / m_centerImageRatio, m_height / m_centerImageRatio);
+                    QSize centerImageSize(width() / m_centerImageRatio, height() / m_centerImageRatio);
                     drawCenterImage(&image, m_imagePath, centerImageSize,
                                     (image.width() - centerImageSize.width()) / 2,
                                     (image.height() - centerImageSize.height()) / 2);
@@ -122,7 +125,7 @@ bool SBarcodeGenerator::saveImage()
 void SBarcodeGenerator::drawCenterImage(QImage *parentImage, const QString &imagePath, QSize imageSize, int x, int y)
 {
     QImage centerImage(imageSize, QImage::Format_RGB32);
-    centerImage.load(imagePath);
+    centerImage.load(QUrl(imagePath).toLocalFile());
 
     if (centerImage.isNull()) {
         qWarning() << "Center image could not be loaded!";

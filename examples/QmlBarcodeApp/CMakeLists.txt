@@ -17,6 +17,8 @@ set(SOURCES
     ColorController.h
     ColorController.cpp
     VersionHelper.h
+    FormatHelper.h
+    FormatHelper.cpp
     main.cpp
 )
 

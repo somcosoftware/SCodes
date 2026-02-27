@@ -64,7 +64,7 @@ ComboBox {
             id: listView
             clip: true
             implicitHeight: contentHeight
-            model: root.visible ? root.delegateModel : null
+            model: root.delegateModel
             currentIndex: root.highlightedIndex
             boundsBehavior: Flickable.StopAtBounds
             highlightMoveDuration: 0
@@ -85,9 +85,11 @@ ComboBox {
 
     delegate: Rectangle {
         id: comboBoxDelegate
-        required property var model
-        required property int index
 
+        property string text: {
+            var data = modelData || model
+            return data ? data[root.textRole] || "" : ""
+        }
         property bool isCurrentItem: ListView.view.currentIndex === index
 
         height: 36
@@ -114,8 +116,8 @@ ComboBox {
 
             Text {
                 Layout.fillWidth: true
-                text: comboBoxDelegate.model[root.textRole]
-                font.pixelSize: 16
+                text: comboBoxDelegate.text
+                font.pixelSize: 18
                 font.bold: comboBoxDelegate.isCurrentItem
                 color: Theme.black
             }

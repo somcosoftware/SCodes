@@ -10,11 +10,11 @@ Button {
 
     implicitHeight: 54
     icon.source: ""
+    font.bold: true
 
     background: Rectangle {
         radius: 72
-        color: Theme.getButtonBackground(root.backgroundColor, root.enabled,
-                                         root.down)
+        color: Theme.getButtonBackground(root.backgroundColor, root.enabled, root.down)
     }
 
     font {
@@ -39,7 +39,7 @@ Button {
                 font {
                     pixelSize: 16
                     family: Theme.fontFamily
-                    bold: true
+                    bold: root.font.bold
                 }
             }
 

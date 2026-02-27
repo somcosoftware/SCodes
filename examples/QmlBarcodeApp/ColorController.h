@@ -1,5 +1,4 @@
-#ifndef COLORCONTROLLER_H
-#define COLORCONTROLLER_H
+#pragma once
 
 #include <QObject>
 #include <QColor>
@@ -14,5 +13,3 @@ public:
 public slots:
     bool checkColor(const QString &color);
 };
-
-#endif // COLORCONTROLLER_H

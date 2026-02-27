@@ -40,6 +40,7 @@ enum class SBarcodeFormat : int {
     Basic           = Code39 | Code93 | Code128 | QRCode | DataMatrix,
 };
 
+Q_ENUM_NS(SBarcodeFormat)
 Q_DECLARE_FLAGS(SBarcodeFormats, SBarcodeFormat)
 Q_DECLARE_OPERATORS_FOR_FLAGS(SBarcodeFormats)
 Q_FLAG_NS(SBarcodeFormats)

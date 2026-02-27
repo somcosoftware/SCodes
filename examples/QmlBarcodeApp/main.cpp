@@ -1,8 +1,9 @@
-#include <QGuiApplication>
+#include <QApplication>
 #include <QQmlApplicationEngine>
 
 #include "ColorController.h"
 #include "VersionHelper.h"
+#include "FormatHelper.h"
 
 #include "SBarcodeGenerator.h"
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
@@ -21,8 +22,9 @@ int main(int argc, char* argv[])
     qputenv("QT_QUICK_CONTROLS_STYLE", QByteArray("Basic"));
 #endif
 
-    QGuiApplication app(argc, argv);
+    QApplication app(argc, argv);
     QQmlApplicationEngine engine;
+    engine.addImportPath(QCoreApplication::applicationDirPath());
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     qmlRegisterType<SBarcodeFilter>("com.somcosoftware.scodes", 1, 0, "SBarcodeScanner");
@@ -35,6 +37,9 @@ int main(int argc, char* argv[])
     qmlRegisterSingletonInstance<ColorController>("com.somcosoftware.scodes", 1, 0, "ColorController", &colorController);
     VersionHelper versionHelper;
     qmlRegisterSingletonInstance<VersionHelper>("com.somcosoftware.scodes", 1, 0, "VersionHelper", &versionHelper);
+
+    FormatHelper formatHelper;
+    qmlRegisterSingletonInstance<FormatHelper>("com.somcosoftware.scodes", 1, 0, "FormatHelper", &formatHelper);
 
     qmlRegisterUncreatableMetaObject(
         SCodes::staticMetaObject, "com.somcosoftware.scodes", 1, 0, "SCodes", "Error, enum type");

@@ -18,7 +18,7 @@ find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core)
 
 # ---PACKAGES SECTION---
-list(APPEND REQUIRED_QT_PACKAGES Core Quick Gui Multimedia)
+list(APPEND REQUIRED_QT_PACKAGES Core Quick Gui Widgets Multimedia)
 
 if(USE_QML)
     list(APPEND REQUIRED_QT_PACKAGES Quick)

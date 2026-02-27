@@ -26,6 +26,11 @@ SBarcodeScanner::SBarcodeScanner(QObject* parent)
 
 SBarcodeScanner::~SBarcodeScanner()
 {
+    if(m_camera)
+    {
+        m_camera->stop();
+    }
+
     workerThread.quit();
     workerThread.wait();
 }
@@ -161,11 +166,11 @@ bool SBarcodeScanner::cameraAvailable() const
 
 void SBarcodeScanner::setCamera(QCamera *newCamera)
 {
-    if(m_camera == newCamera){
+    if (m_camera == newCamera){
         return;
     }
     // disconnect old camera if not already null
-    if(m_camera)
+    if (m_camera)
     {
         m_camera->stop();
         disconnect(m_camera,nullptr,this,nullptr);
@@ -178,7 +183,7 @@ void SBarcodeScanner::setCamera(QCamera *newCamera)
     }
 
     // connect new camera if not null
-    if(newCamera)
+    if (newCamera)
     {
         auto format = newCamera->cameraFormat();
         connect(newCamera,&QCamera::errorOccurred,this,[this](auto err,const auto& string){

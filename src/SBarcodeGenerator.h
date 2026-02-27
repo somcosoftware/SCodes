@@ -18,8 +18,7 @@
 class SBarcodeGenerator : public QQuickItem
 {
     Q_OBJECT
-    Q_PROPERTY(int width MEMBER m_width NOTIFY widthChanged)
-    Q_PROPERTY(int height MEMBER m_height NOTIFY heightChanged)
+
     Q_PROPERTY(int margin MEMBER m_margin NOTIFY marginChanged)
     Q_PROPERTY(int eccLevel MEMBER m_eccLevel NOTIFY eccLevelChanged)
     Q_PROPERTY(QString fileName MEMBER m_fileName NOTIFY fileNameChanged)
@@ -144,18 +143,6 @@ signals:
     void generationFinished(const QString &error = "");
 
     /*!
-     * \brief This signal is emitted to send width to QML.
-     * \param int width - width.
-     */
-    void widthChanged(int width);
-
-    /*!
-     * \brief This signal is emitted to send height to QML.
-     * \param int height - height.
-     */
-    void heightChanged(int height);
-
-    /*!
      * \brief This signal is emitted to send margin to QML.
      * \param int margin - margin.
      */
@@ -202,8 +189,6 @@ signals:
     void backgroundColorChanged();
 
 private:
-    int m_width    = 500;
-    int m_height   = 500;
     int m_margin   = 10;
     int m_eccLevel = -1;
 

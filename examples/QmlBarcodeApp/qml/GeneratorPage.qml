@@ -1,11 +1,13 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
-import QtMultimedia 5.12
 import QtQuick.Layouts 1.12
+import Qt.labs.platform 1.0
 
 import com.somcosoftware.scodes 1.0
 
 Item {
+    id: root
+
     SBarcodeGenerator {
         id: barcodeGenerator
 
@@ -50,49 +52,10 @@ Item {
                     CComboBox {
                         id: formatDropDown
                         Layout.fillWidth: true
-                        textRole: "text"
 
-                        model: ListModel {
-                            ListElement {
-                                text: "Aztec"
-                            }
-                            ListElement {
-                                text: "Codabar"
-                            }
-                            ListElement {
-                                text: "Code39"
-                            }
-                            ListElement {
-                                text: "Code93"
-                            }
-                            ListElement {
-                                text: "Code128"
-                            }
-                            ListElement {
-                                text: "DataMatrix"
-                            }
-                            ListElement {
-                                text: "EAN-8"
-                            }
-                            ListElement {
-                                text: "EAN-13"
-                            }
-                            ListElement {
-                                text: "ITF"
-                            }
-                            ListElement {
-                                text: "PDF417"
-                            }
-                            ListElement {
-                                text: "QRCode"
-                            }
-                            ListElement {
-                                text: "UPC-A"
-                            }
-                            ListElement {
-                                text: "UPC-E"
-                            }
-                        }
+                        model: FormatHelper.supportedFormats
+                        textRole: "text"
+                        valueRole: "value"
 
                         onCurrentTextChanged: function () {
                             barcodeGenerator.setFormat(currentText)
@@ -118,6 +81,92 @@ Item {
                         id: textField
                         Layout.fillWidth: true
                         placeholderText: qsTr("Input")
+                    }
+                }
+
+                ColumnLayout {
+                    Layout.fillWidth: true
+                    spacing: 8
+                    Text {
+                        Layout.fillWidth: true
+                        text: qsTr("Change colors")
+                        color: Theme.textColor
+                        font {
+                            pixelSize: 14
+                            family: Theme.fontFamily
+                            bold: true
+                        }
+                    }
+
+                    RowLayout {
+                        Layout.fillWidth: true
+                        spacing: 16
+                        CButton {
+                            id: selectForeground
+                            Layout.fillWidth: true
+                            text: qsTr("Foreground: " + barcodeGenerator.foregroundColor)
+                            font.bold: false
+                            backgroundColor: Theme.white
+                            textColor: Theme.black
+                            onClicked: foregroundColorDialog.open()
+                        }
+
+                        CButton {
+                            id: selectBackground
+                            Layout.fillWidth: true
+                            text: qsTr("Background: " + barcodeGenerator.backgroundColor)
+                            font.bold: false
+                            backgroundColor: Theme.white
+                            textColor: Theme.black
+                            onClicked: backgroundColorDialog.open()
+                        }
+                    }
+                }
+
+                ColumnLayout {
+                    Layout.fillWidth: true
+                    visible: formatDropDown.currentValue == SCodes.QRCode
+
+                    spacing: 8
+                    Text {
+                        Layout.fillWidth: true
+                        text: qsTr("Select center image (optional)")
+                        color: Theme.textColor
+                        font {
+                            pixelSize: 14
+                            family: Theme.fontFamily
+                            bold: true
+                        }
+                    }
+
+                    RowLayout {
+                        Layout.fillWidth: true
+                        spacing: 16
+                        CTextField {
+                            Layout.fillWidth: true
+                            readOnly: true
+                            placeholderText: qsTr("Center image path")
+                            text: barcodeGenerator.imagePath
+                        }
+
+                        CButton {
+                            Layout.preferredWidth: 200
+                            text: qsTr("Select....")
+                            visible: barcodeGenerator.imagePath === ""
+                            font.bold: false
+                            backgroundColor: Theme.white
+                            textColor: Theme.black
+                            onClicked: fileDialog.open()
+                        }
+                        CButton {
+                            Layout.preferredWidth: 200
+                            visible: barcodeGenerator.imagePath !== ""
+                            text: qsTr("Clear")
+                            font.bold: false
+                            backgroundColor: Theme.white
+                            textColor: Theme.red
+                            onClicked: barcodeGenerator.imagePath = ""
+                        }
                     }
                 }
 
@@ -218,12 +267,9 @@ Item {
                         icon.source: "qrc:/icons/download.svg"
                         onClicked: {
                             if (barcodeGenerator.saveImage()) {
-                                messagePopup.showMessage(
-                                            qsTr("File successfully saved: "
-                                                 + barcodeGenerator.filePath))
+                                messagePopup.showMessage(qsTr("File successfully saved: " + barcodeGenerator.filePath))
                             } else {
-                                messagePopup.showMessage(
-                                            qsTr("There was an error while saving file"))
+                                messagePopup.showMessage(qsTr("There was an error while saving file"))
                             }
                         }
                     }
@@ -256,5 +302,31 @@ Item {
             id: messagePopupLabel
             anchors.centerIn: parent
         }
+    }
+
+    FileDialog {
+        id: fileDialog
+        fileMode: FileDialog.OpenFile
+        folder: StandardPaths.standardLocations(StandardPaths.PicturesLocation)[0]
+        onAccepted: barcodeGenerator.imagePath = file
+        onRejected: fileDialog.close()
+    }
+
+    ColorDialog {
+        id: foregroundColorDialog
+
+        // options: ColorDialog.DontUseNativeDialog
+        currentColor: barcodeGenerator.foregroundColor
+
+        onAccepted: barcodeGenerator.foregroundColor = color
+    }
+
+    ColorDialog {
+        id: backgroundColorDialog
+
+        // options: ColorDialog.DontUseNativeDialog
+        currentColor: barcodeGenerator.backgroundColor
+
+        onAccepted: barcodeGenerator.backgroundColor = color
     }
 }
