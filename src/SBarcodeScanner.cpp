@@ -94,13 +94,13 @@ QCamera *SBarcodeScanner::makeDefaultCamera()
     auto defaultCamera = QMediaDevices::defaultVideoInput();
     if (defaultCamera.isNull())
     {
-        errorOccured("No default camera could be found on the system");
+        emit errorOccured("No default camera could be found on the system");
         return nullptr;
     }
 
     auto camera = new QCamera(defaultCamera, this);
     if (camera->error()) {
-        errorOccured("Error during camera initialization: " + camera->errorString());
+        emit errorOccured("Error during camera initialization: " + camera->errorString());
         return nullptr;
     }
 
@@ -114,7 +114,7 @@ QCamera *SBarcodeScanner::makeDefaultCamera()
     }
     if(supportedFormats.empty())
     {
-        errorOccured("A default camera was found but it has no supported formats. The Camera may be wrongly configured.");
+        emit errorOccured("A default camera was found but it has no supported formats. The Camera may be wrongly configured.");
         return nullptr;
     }
 
