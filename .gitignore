@@ -70,6 +70,9 @@ build
 # Python byte code
 *.pyc
 
+# Android auto-generated files
+examples/QmlBarcodeApp/android/res/values/libs.xml
+
 # Binaries
 # --------
 *.dll

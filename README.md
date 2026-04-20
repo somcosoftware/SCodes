@@ -3,7 +3,7 @@
 
 This project is Qt & Qml wrapper for [ZXing-C++ Library](https://github.com/nu-book/zxing-cpp) that is used for decoding and generating 1D and 2D barcodes. This particular C++ ZXing port is one of the most recent C++ versions of popular ZXing library using modern compilers.
 
-Thanks to SCodes you can start scanning barcodes in few steps. We used Qt 5.15.2 and Qt 6.3.0 to built wrapper and example applications, but it's compatible with older Qt versions as well.
+Thanks to SCodes you can start scanning barcodes in few steps. We used Qt 5.15.2 and Qt 6.11.0 to built wrapper and example applications, but it's compatible with older Qt versions as well.
 
 Implementation of same method for both Qt version does not seems possible([check why](#porting)). We have ported the SCodes wrapper to Qt6 by following the multimedia [changes](https://doc-snapshots.qt.io/qt6-6.3/qtmultimedia-changes-qt6.html).
 
@@ -47,7 +47,7 @@ There are plenty of supported formats and we constantly work on adding new.
 
 
 # How to use wrapper?
-![SCodes Scanner Preview](/assets/scanner.gif)![SCodes Generator Preview](/assets/generator.gif)
+![SCodes Qml Barcode Example](/assets/QmlBarcodeExample.gif)
 
 ## Using 
 
@@ -148,14 +148,14 @@ Both build systems have their examples located in same directory. All you need t
 | QmlBarcodeApp | qmake |<center>✔️</center>|<center>✔️</center>|<center>✔️</center>|<center>✔️</center>|
 | QmlBarcodeApp | CMake |<center>✔️</center>|<center>✔️</center>|<center>✔️</center>|<center>✔️</center>|
 
-#### Qt6.3.0,
+#### Qt6.11.0,
 
 | PROJECT | BUILD SYSTEM | WINDOWS-MinGW | WINDOWS-MSVC | LINUX-GCC | ANDROID |
 | ------ | ------ | ------ | ------ | ------ | ------ |
 | QmlBarcodeApp | qmake |<center>✔️</center>|<center>✔️</center>|<center>✔️</center>|<center>✔️</center>|
 | QmlBarcodeApp | CMake |<center>✔️</center>|<center>✔️</center>|<center>✔️</center>|<center>✔️</center>|
 
-Please ensure that proper Java & NDK version installed on your system. This examples tested w/ Java 11 and 22.1.7171670 Android NDK version.
+Please ensure that proper Java & NDK version installed on your system. This examples tested w/ Java 22 and 27.2.12479018 Android NDK version.
 
 ## About Somco Software
 [Somco Software](https://somcosoftware.com/en/) (previously Scythe Studio) is an embedded and cross-platform software development company with a strong focus on Qt and C++, delivering reliable, high-quality solutions for regulated industries, with particular expertise in medical devices. We are an ISO 9001 and ISO 13485 certified software house, specializing in GUI development, Linux-based systems, and advanced connectivity solutions. Somco Software is an official Qt Service Partner and a trusted partner of leading hardware manufacturers.

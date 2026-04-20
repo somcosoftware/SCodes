@@ -1,5 +1,6 @@
 #include "SBarcodeScanner.h"
 #include <QMediaDevices>
+#include <QVideoFrameFormat>
 #include "private/debug.h"
 SBarcodeScanner::SBarcodeScanner(QObject* parent)
     : QVideoSink(parent)
@@ -63,12 +64,18 @@ void SBarcodeScanner::tryProcessFrame(const QVideoFrame& frame)
     // Set the guard variable to not process more than 1 frame at the time
     m_frameProcessingInProgress = true;
 
-    // Scale the normalized rectangle for camera resolution
-    auto r = m_camera->cameraFormat().resolution();
-    auto cRect = QRectF{m_captureRect.x()*r.width(),
-            m_captureRect.y()*r.height(),
-            m_captureRect.width()*r.width(),
-                       m_captureRect.height()*r.height()}.toRect();
+    // Qt 6.7+ applies frame rotation in toImage(), so compute the captureRect
+    // against post-rotation dimensions to match what VideoOutput shows.
+    const auto rotation = frame.surfaceFormat().rotation();
+    const bool isRotated = rotation == QtVideo::Rotation::Clockwise90
+                        || rotation == QtVideo::Rotation::Clockwise270;
+    const int imgW = isRotated ? frame.height() : frame.width();
+    const int imgH = isRotated ? frame.width()  : frame.height();
+
+    auto cRect = QRectF{m_captureRect.x() * imgW,
+                        m_captureRect.y() * imgH,
+                        m_captureRect.width() * imgW,
+                        m_captureRect.height() * imgH}.toRect();
 
     // Invoke processing asynchronously, potential result will be reported by capturedChanged signal
     // We can copy QVideoFrame as it's explicitly shared (just like std::shared_ptr)
